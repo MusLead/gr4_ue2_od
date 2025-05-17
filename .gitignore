@@ -29,7 +29,6 @@ log/
 *.log
 *.sql
 *.sqlite
-*.txt
 imu.txt
 odometry.txt
 

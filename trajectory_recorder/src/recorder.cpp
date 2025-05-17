@@ -62,8 +62,9 @@ private:
 
 int main(int argc, char** argv)
 {
-    std::ofstream odom_out("odometry.txt");
-    std::ofstream imu_out("imu.txt");
+    std::ofstream odom_out("odometry.txt", std::ios::out | std::ios::trunc);
+    std::ofstream imu_out("imu.txt", std::ios::out | std::ios::trunc);
+
 
     rclcpp::init(argc, argv);
     rclcpp::spin(std::make_shared<TrajectoryRecorder>(odom_out, imu_out));
