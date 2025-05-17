@@ -14,13 +14,12 @@ public:
     TrajectoryRecorder(std::ofstream& odom_out, std::ofstream& imu_out) : 
         Node("trajectory_recorder"), odom_out_(odom_out), imu_out_(imu_out)
     {
-        auto subscriber = this->create_subscription<std_msgs::msg::String>(
-            "/rosbot_base_controller/odom", 10,
-            [&](const std_msgs::msg::String& msg){
-                std::cout << "I heard: x " << msg.data << std::endl;
+        subscription_ = this->create_subscription<nav_msgs::msg::Odometry>(
+            "rosbot_base_controller/odom", 10,
+            [&](const nav_msgs::msg::Odometry& msg){
+                std::cout << "I heard: x " << msg.pose.pose.position.x << std::endl;
             }
             );
-
     }
 
 
@@ -32,6 +31,7 @@ private:
     std::ofstream& odom_out_;
     std::ofstream& imu_out_;
 
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_;
 
 };
 
