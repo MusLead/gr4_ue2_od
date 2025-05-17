@@ -1,0 +1,116 @@
+This node takes keypresses from the keyboard and publishes them
+as Twist/TwistStamped messages. It works best with a US keyboard layout.
+---------------------------
+Moving around:
+   u    i    o
+   j    k    l
+   m    ,    .
+
+For Holonomic mode (strafing), hold down the shift key:
+---------------------------
+   U    I    O
+   J    K    L
+   M    <    >
+
+t : up (+z)
+b : down (-z)
+
+anything else : stop
+
+q/z : increase/decrease max speeds by 10%
+w/x : increase/decrease only linear speed by 10%
+e/c : increase/decrease only angular speed by 10%
+
+CTRL-C to quit
+
+currently:	speed 0.13840459435251415	turn 0.2768091887050283 
+currently:	speed 0.15224505378776557	turn 0.30449010757553113 
+currently:	speed 0.16746955916654213	turn 0.33493911833308426 
+currently:	speed 0.18421651508319636	turn 0.3684330301663927 
+currently:	speed 0.202638166591516	turn 0.405276333183032 
+currently:	speed 0.22290198325066762	turn 0.44580396650133525 
+currently:	speed 0.2451921815757344	turn 0.4903843631514688 
+currently:	speed 0.2697113997333079	turn 0.5394227994666158 
+currently:	speed 0.2966825397066387	turn 0.5933650794132774 
+currently:	speed 0.26701428573597485	turn 0.5340285714719497 
+currently:	speed 0.24031285716237738	turn 0.48062571432475476 
+currently:	speed 0.21628157144613966	turn 0.4325631428922793 
+currently:	speed 0.1946534143015257	turn 0.3893068286030514 
+currently:	speed 0.1751880728713731	turn 0.3503761457427462 
+currently:	speed 0.1576692655842358	turn 0.3153385311684716 
+
+This node takes keypresses from the keyboard and publishes them
+as Twist/TwistStamped messages. It works best with a US keyboard layout.
+---------------------------
+Moving around:
+   u    i    o
+   j    k    l
+   m    ,    .
+
+For Holonomic mode (strafing), hold down the shift key:
+---------------------------
+   U    I    O
+   J    K    L
+   M    <    >
+
+t : up (+z)
+b : down (-z)
+
+anything else : stop
+
+q/z : increase/decrease max speeds by 10%
+w/x : increase/decrease only linear speed by 10%
+e/c : increase/decrease only angular speed by 10%
+
+CTRL-C to quit
+
+currently:	speed 0.14190233902581223	turn 0.28380467805162446 
+currently:	speed 0.127712105123231	turn 0.255424210246462 
+currently:	speed 0.11494089461090791	turn 0.22988178922181582 
+currently:	speed 0.10344680514981712	turn 0.20689361029963424 
+currently:	speed 0.09310212463483541	turn 0.18620424926967083 
+currently:	speed 0.08379191217135187	turn 0.16758382434270375 
+currently:	speed 0.0754127209542167	turn 0.1508254419084334 
+currently:	speed 0.08295399304963837	turn 0.16590798609927673 
+currently:	speed 0.09124939235460221	turn 0.18249878470920441 
+currently:	speed 0.10037433159006244	turn 0.20074866318012488 
+currently:	speed 0.11041176474906869	turn 0.22082352949813738 
+currently:	speed 0.12145294122397557	turn 0.24290588244795114 
+currently:	speed 0.13359823534637313	turn 0.26719647069274627 
+currently:	speed 0.14695805888101046	turn 0.2939161177620209 
+currently:	speed 0.16165386476911153	turn 0.32330772953822307 
+
+This node takes keypresses from the keyboard and publishes them
+as Twist/TwistStamped messages. It works best with a US keyboard layout.
+---------------------------
+Moving around:
+   u    i    o
+   j    k    l
+   m    ,    .
+
+For Holonomic mode (strafing), hold down the shift key:
+---------------------------
+   U    I    O
+   J    K    L
+   M    <    >
+
+t : up (+z)
+b : down (-z)
+
+anything else : stop
+
+q/z : increase/decrease max speeds by 10%
+w/x : increase/decrease only linear speed by 10%
+e/c : increase/decrease only angular speed by 10%
+
+CTRL-C to quit
+
+currently:	speed 0.1778192512460227	turn 0.3556385024920454 
+currently:	speed 0.195601176370625	turn 0.39120235274125 
+currently:	speed 0.21516129400768752	turn 0.43032258801537504 
+currently:	speed 0.2366774234084563	turn 0.4733548468169126 
+currently:	speed 0.26034516574930194	turn 0.5206903314986039 
+currently:	speed 0.28637968232423217	turn 0.5727593646484643 
+currently:	speed 0.3150176505566554	turn 0.6300353011133109 
+currently:	speed 0.2835158855009899	turn 0.5670317710019798 
+currently:	speed 0.2551642969508909	turn 0.5103285939017818 
