@@ -30,6 +30,8 @@ log/
 *.sql
 *.sqlite
 *.txt
+imu.txt
+odometry.txt
 
 # OS generated files #
 ######################
