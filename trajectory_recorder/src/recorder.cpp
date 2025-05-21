@@ -43,7 +43,7 @@ public:
 					double az = msg.linear_acceleration.z;	
 					double omega = msg.angular_velocity.z;
 
-					delta_t = t_now - t_vor;
+					double delta_t = t_now - t_vor;
 					double v = sqrt(pow(ax * delta_t, 2.0) + pow(ay * delta_t, 2.0) + pow(az * delta_t, 2.0));
 					double xn = x_vor + (v * delta_t * sin(rotateAngular_vor));
 					double yn = y_vor + (v * delta_t * cos(rotateAngular_vor));
