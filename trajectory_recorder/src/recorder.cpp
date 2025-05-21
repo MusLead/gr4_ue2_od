@@ -1,5 +1,6 @@
 #include <memory>
 #include <fstream>
+#include <cmath>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
@@ -7,6 +8,10 @@
 #include "sensor_msgs/msg/imu.hpp"
 
 using std::placeholders::_1;
+using std::sqrt;
+using std::pow;
+using std::sin;
+using std::cos;
 
 class TrajectoryRecorder : public rclcpp::Node
 {
@@ -30,17 +35,28 @@ public:
             "/imu_broadcaster/imu", 10,
             [&](const sensor_msgs::msg::Imu& msg){
                 std::cout << "[IMU] time: " << msg.header.stamp.nanosec << std::endl;
-                imu_out_ << msg.orientation.x << " "
-                         << msg.orientation.y << " "
-                         << msg.orientation.z << " "
-                         << msg.orientation.w << " "
-                         << msg.angular_velocity.x << " "
-                         << msg.angular_velocity.y << " "
-                         << msg.angular_velocity.z << " "
-                         << msg.linear_acceleration.x << " "
-                         << msg.linear_acceleration.y << " "
-                         << msg.linear_acceleration.z << std::endl;
-                imu_out_.flush();
+             	double t_now = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9;
+				if (t_vor == 0) {
+					t_vor = t_now;
+				} else {
+					double ax = msg.linear_acceleration.x;
+					double ay = msg.linear_acceleration.y;
+					double az = msg.linear_acceleration.z;	
+					double omega = msg.angular_velocity.z;
+
+					delta_t = t_now - t_vor;
+					double v = sqrt(pow(ax * delta_t, 2.0) + pow(ay * delta_t, 2.0) + pow(az * delta_t, 2.0));
+					double xn = x_vor + (v * delta_t * sin(rotateAngular_vor));
+					double yn = y_vor + (v * delta_t * cos(rotateAngular_vor));
+					double rotateAngular = rotateAngular_vor + (omega * pow(delta_t, 2.0));
+	
+					imu_out << xn << " " << yn << std::endl;
+	                imu_out_.flush();
+	
+					x_vor = xn;
+					y_vor = yn;
+					rotateAngular_vor = rotateAngular;
+				}
             }
         );
   
@@ -57,7 +73,10 @@ private:
 
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_odom_;
     rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr subscription_imu_;
-
+	
+	double t_vor = 0;
+	double x_vor = 0, y_vor = 0;
+	double rotateAngular_vor = 0;
 };
 
 int main(int argc, char** argv)
