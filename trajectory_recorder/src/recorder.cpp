@@ -34,7 +34,6 @@ public:
         subscription_imu_ = this->create_subscription<sensor_msgs::msg::Imu>(
             "/imu_broadcaster/imu", 10,
             [&](const sensor_msgs::msg::Imu& msg){
-                std::cout << "[IMU] time: " << msg.header.stamp.nanosec << std::endl;
              	double t_now = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9;
 				if (t_vor == 0) {
 					t_vor = t_now;
@@ -50,6 +49,7 @@ public:
 					double yn = y_vor + (v * delta_t * cos(rotateAngular_vor));
 					double rotateAngular = rotateAngular_vor + (omega * pow(delta_t, 2.0));
 	
+					std::cout <<"[IMU] x " << xn << ", y " << yn << std::endl;
 					imu_out << xn << " " << yn << std::endl;
 	                imu_out_.flush();
 	
