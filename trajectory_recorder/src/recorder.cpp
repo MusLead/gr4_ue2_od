@@ -25,9 +25,19 @@ public:
                 std::cout << "[Odom] x " << msg.pose.pose.position.x 
                     << ", y "<< msg.pose.pose.position.y 
                     << std::endl;
-                odom_out_ << msg.pose.pose.position.x << " "
-                          << msg.pose.pose.position.y  << std::endl;
-                odom_out_.flush();
+
+                if(x_odom != msg.pose.pose.position.x || y_odom != msg.pose.pose.position.y) {
+                    isMoving = true;
+                    
+                    odom_out_ << msg.pose.pose.position.x << " "
+                          << msg.pose.pose.position.y << std::endl;
+                    odom_out_.flush();
+                } else {
+                    isMoving = false;
+                }
+                
+                x_odom = msg.pose.pose.position.x;
+                y_odom = msg.pose.pose.position.y;               
             }
         );
 
@@ -43,10 +53,7 @@ public:
 					az = msg.linear_acceleration.z;
                     omega = msg.angular_velocity.z;
 
-				} else if(ax != msg.linear_acceleration.x || 
-                    ay != msg.linear_acceleration.y || 
-                    az != msg.linear_acceleration.z ||
-                    omega != msg.angular_velocity.z) {
+				} else if(isMoving) {
 
                     log_imu_debug(msg);
 					
