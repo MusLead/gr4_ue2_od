@@ -22,17 +22,30 @@ public:
         subscription_odom_ = this->create_subscription<nav_msgs::msg::Odometry>(
             "rosbot_base_controller/odom", 10,
             [&](const nav_msgs::msg::Odometry& msg){
-                std::cout << "[Odom] x " << msg.pose.pose.position.x 
-                    << ", y "<< msg.pose.pose.position.y 
-                    << std::endl;
 
-                if(x_odom != msg.pose.pose.position.x || y_odom != msg.pose.pose.position.y) {
+                isMoving = x_odom != msg.pose.pose.position.x || y_odom != msg.pose.pose.position.y;
+
+                
+                if (first_odom_) {
+
+                    first_odom_ = false;
+                    odom_offset_x_ = msg.pose.pose.position.x;
+                    odom_offset_y_ = msg.pose.pose.position.y;
+                
+                } else if (isMoving) {
+                    
+                    // to make sure that the position is in the scope and the original point is 0,0
+                    double x = msg.pose.pose.position.x - odom_offset_x_;
+                    double y = msg.pose.pose.position.y - odom_offset_y_;
+                    
+                    std::cout << "[Odom] x " << x << ", y "<< y << std::endl;
+                    odom_out_ << x << " "<< y << std::endl;
+                    odom_out_.flush();
+
                     isMoving = true;
                     
-                    odom_out_ << msg.pose.pose.position.x << " "
-                          << msg.pose.pose.position.y << std::endl;
-                    odom_out_.flush();
                 } else {
+                    
                     isMoving = false;
                 }
                 
@@ -46,28 +59,30 @@ public:
             [&](const sensor_msgs::msg::Imu& msg){
 
              	double t_now = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9;
-				if (t_vor == 0) {
-                    
-                    ax = msg.linear_acceleration.x;
-					ay = msg.linear_acceleration.y;
-					az = msg.linear_acceleration.z;
-                    omega = msg.angular_velocity.z;
+                double ax = msg.linear_acceleration.x;
+                double ay = msg.linear_acceleration.y;
+                double az = msg.linear_acceleration.z;	
+                double omega = msg.angular_velocity.z;
+                double xn, yn, rotateAngular;
 
-				} else if(isMoving) {
+                if (first_imu_) {
+
+                    first_imu_ = false;
+
+                    berechnung_imu(t_now, ax, ay, az, xn, yn, rotateAngular, omega);
+
+                    imu_offset_x_ = xn;
+                    imu_offset_y_ = yn;
+                
+                } else if(isMoving) {
 
                     log_imu_debug(msg);
-					
-                    ax = msg.linear_acceleration.x;
-					ay = msg.linear_acceleration.y;
-					az = msg.linear_acceleration.z;	
-					omega = msg.angular_velocity.z;
 
-					double delta_t = t_now - t_vor;
-					double v = sqrt(pow(ax * delta_t, 2.0) + pow(ay * delta_t, 2.0) + pow(az * delta_t, 2.0));
-					double xn = x_vor + (v * delta_t * sin(rotateAngular_vor));
-					double yn = y_vor + (v * delta_t * cos(rotateAngular_vor));
-					double rotateAngular = rotateAngular_vor + (omega * pow(delta_t, 2.0));
-	
+                    berechnung_imu(t_now, ax, ay, az, xn, yn, rotateAngular, omega);
+
+                    xn = xn - imu_offset_x_;
+                    yn = yn - imu_offset_y_;
+
 					std::cout <<"[IMU] x " << xn << ", y " << yn << std::endl;
 					imu_out << xn << " " << yn << std::endl;
 	                imu_out_.flush();
@@ -76,14 +91,24 @@ public:
 					y_vor = yn;
 					rotateAngular_vor = rotateAngular;
 				}
+
                 t_vor = t_now;
             }
         );
-  
     }
 
+    
+    private:
+    
+    void berechnung_imu(double t_now, double ax, double ay, double az, double &xn, double &yn, double &rotateAngular, double omega)
+    {
+        double delta_t = t_now - t_vor;
+        double v = sqrt(pow(ax * delta_t, 2.0) + pow(ay * delta_t, 2.0) + pow(az * delta_t, 2.0));
+        xn = x_vor + (v * delta_t * sin(rotateAngular_vor));
+        yn = y_vor + (v * delta_t * cos(rotateAngular_vor));
+        rotateAngular = rotateAngular_vor + (omega * pow(delta_t, 2.0));
+    }
 
-private:
     void log_imu_debug(const sensor_msgs::msg::Imu& msg)
     {
         imu_debug_out_ << "[IMU DEBUG] Orientation: ("
@@ -114,9 +139,16 @@ private:
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_odom_;
     rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr subscription_imu_;
 	
+    double odom_offset_x_ = 0.0;
+    double odom_offset_y_ = 0.0;
+    double imu_offset_x_ = 0.0;
+    double imu_offset_y_ = 0.0;
+
     bool isMoving = false;
+    bool first_imu_ = true;
+    bool first_odom_ = true;
+    
     double x_odom = 0, y_odom = 0;
-    double ax, ay, az, omega;
 	double t_vor = 0;
 	double x_vor = 0, y_vor = 0;
 	double rotateAngular_vor = 0;
