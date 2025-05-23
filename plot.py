@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Button
+from matplotlib.widgets import Slider
 
 # Read data from a text file
 def read_data(filename):
@@ -11,45 +11,31 @@ def read_data(filename):
 data = read_data('odometry.txt')
 max_index = len(data)
 
-# Frame index (how many points to show)
-index = [1]  # Using a list to keep it mutable in callbacks
-
 # Create plot
 fig, ax = plt.subplots()
-plt.subplots_adjust(bottom=0.2)
+plt.subplots_adjust(bottom=0.25)  # Make space for the slider
 line, = ax.plot([], [], 'bo-')
 ax.set_xlim(min(d[0] for d in data), max(d[0] for d in data))
 ax.set_ylim(min(d[1] for d in data), max(d[1] for d in data))
-ax.set_title("Odometry Data Viewer")
+ax.set_title("Odometry Data Viewer with Slider")
 ax.set_xlabel("X")
 ax.set_ylabel("Y")
 
-# Update function
-def update_plot():
-    current_data = data[:index[0]]
+# Slider axis and widget
+slider_ax = plt.axes([0.2, 0.1, 0.6, 0.03])
+frame_slider = Slider(slider_ax, 'Frame', 1, max_index, valinit=1, valstep=1)
+
+# Update function for slider
+def update(val):
+    idx = int(frame_slider.val)
+    current_data = data[:idx]
     x, y = zip(*current_data)
     line.set_data(x, y)
     fig.canvas.draw_idle()
 
-# Button callbacks
-def next_point(event):
-    if index[0] < max_index:
-        index[0] += 1
-        update_plot()
-
-def prev_point(event):
-    if index[0] > 1:
-        index[0] -= 1
-        update_plot()
-
-# Create buttons
-axprev = plt.axes([0.3, 0.05, 0.1, 0.075])
-axnext = plt.axes([0.6, 0.05, 0.1, 0.075])
-bnext = Button(axnext, 'Next')
-bprev = Button(axprev, 'Previous')
-bnext.on_clicked(next_point)
-bprev.on_clicked(prev_point)
+# Connect the slider to the update function
+frame_slider.on_changed(update)
 
 # Initial plot
-update_plot()
+update(1)
 plt.show()
