@@ -7,47 +7,48 @@ def read_data(filename):
         lines = file.readlines()
         return [list(map(float, line.strip().split())) for line in lines]
 
-# Load your data
-data = read_data('odometry.txt')  # Make sure this file exists
-max_frames = len(data)
-frame = [1]  # Use list to make it mutable in button callbacks
+# Load data
+data = read_data('odometry.txt')
+max_index = len(data)
 
-# Prepare figure and plot
+# Frame index (how many points to show)
+index = [1]  # Using a list to keep it mutable in callbacks
+
+# Create plot
 fig, ax = plt.subplots()
-plt.subplots_adjust(bottom=0.2)  # Leave space for buttons
+plt.subplots_adjust(bottom=0.2)
 line, = ax.plot([], [], 'bo-')
 ax.set_xlim(min(d[0] for d in data), max(d[0] for d in data))
 ax.set_ylim(min(d[1] for d in data), max(d[1] for d in data))
+ax.set_title("Odometry Data Viewer")
+ax.set_xlabel("X")
+ax.set_ylabel("Y")
 
-# Update plot based on current frame
+# Update function
 def update_plot():
-    current_data = data[:frame[0]]
-    if current_data:
-        x, y = zip(*current_data)
-        line.set_data(x, y)
-    else:
-        line.set_data([], [])
+    current_data = data[:index[0]]
+    x, y = zip(*current_data)
+    line.set_data(x, y)
     fig.canvas.draw_idle()
 
-# Button callback: Increase frame
-def next_frame(event):
-    if frame[0] < max_frames:
-        frame[0] += 1
+# Button callbacks
+def next_point(event):
+    if index[0] < max_index:
+        index[0] += 1
         update_plot()
 
-# Button callback: Decrease frame
-def prev_frame(event):
-    if frame[0] > 1:
-        frame[0] -= 1
+def prev_point(event):
+    if index[0] > 1:
+        index[0] -= 1
         update_plot()
 
-# Add buttons
+# Create buttons
 axprev = plt.axes([0.3, 0.05, 0.1, 0.075])
 axnext = plt.axes([0.6, 0.05, 0.1, 0.075])
 bnext = Button(axnext, 'Next')
 bprev = Button(axprev, 'Previous')
-bnext.on_clicked(next_frame)
-bprev.on_clicked(prev_frame)
+bnext.on_clicked(next_point)
+bprev.on_clicked(prev_point)
 
 # Initial plot
 update_plot()
