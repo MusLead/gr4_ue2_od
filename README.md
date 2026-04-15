@@ -1,4 +1,4 @@
-# 🤖 Trajectory Recorder – Task B2.2
+# 🤖 Trajectory Recorder – Task B2.2 & B3.1
 
 This ROS 2 project allows students to **analyze the robot's position using Odometry and IMU data**. These data streams are published via ROS 2 topics. Your task is to create a custom node that **subscribes to these topics** and records the data for later analysis.
 
